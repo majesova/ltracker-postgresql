@@ -1,0 +1,9 @@
+.vs/config/applicationhost.config
+.vs/ltracker/v14/.suo
+ltracker.Data/bin/
+ltracker.Data/obj/
+ltracker.Tests/bin/
+ltracker.Tests/obj/
+ltracker/bin/
+packages/
+/ltracker/obj/Debug

@@ -1,0 +1,35 @@
+﻿@model ICollection<ltracker.Models.AssignmentViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Cursos asignados</h2>
+<div class="container">
+    <p>
+        <a class="btn btn-primary" href="@Url.Content("~/Assignment/Create")">Asignar Curso</a>
+    </p>
+
+    @foreach (var item in Model) {
+        <div class="col-md-3 " >
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> @item.Course.Name </h3>
+                </div>
+                <div class="panel-body">
+                    <p>@item.Invidivual.Name</p>
+                    <p>@item.AssignmentDate.Value.ToShortDateString()</p>
+                </div>
+                <div class="panel-footer">
+                    <a href="@Url.Content("~/Assignment/Edit")/@item.Id">
+                        Editar&nbsp;<span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+
+
