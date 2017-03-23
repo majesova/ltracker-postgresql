@@ -8,17 +8,17 @@ using System.Linq.Expressions;
 using ltracker.Data.Entities;
 using ltracker.Models;
 using ltracker.Helpers;
+using AppFramework.Security.Filters;
 
 namespace ltracker.Controllers
 {
+    [AuthorizeUser(Action="write", Resource ="Assignment")]
     public class AssignmentController : BaseController
     {
         // GET: Assignment
         public ActionResult Index() //Busqueda
         {
             var repository = new AssignedCourseRepository(context);
-            //Expression<>[]
-            //Expression<Func<Type,object>>[]{ x=>x.Propiedad }
             var includes = new Expression<Func<AssignedCourse, object>>[] { x=>x.Course, x=>x.Invidivual };
             var courses = repository.QueryIncluding(null, includes, "AssignmentDate");
             var models = MapperHelper.Map <ICollection<AssignmentViewModel>>(courses);

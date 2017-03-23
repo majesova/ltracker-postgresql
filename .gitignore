@@ -7,3 +7,5 @@ ltracker.Tests/obj/
 ltracker/bin/
 packages/
 /ltracker/obj/Debug
+/AppFramework.Security/bin/Debug
+/AppFramework.Security/obj/Debug

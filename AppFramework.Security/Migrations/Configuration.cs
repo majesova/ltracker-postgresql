@@ -14,18 +14,22 @@ namespace AppFramework.Security.Migrations
 
         protected override void Seed(AppFramework.Security.AppSecurityContext context)
         {
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            var resource = new AppResource { Name = "Assignment" };
+            context.Resources.Add(resource);
+            context.SaveChanges();
+            var permissionWrite = new AppPermission { Action = new AppAction { Name = "WRITE" }, Resource = resource };
+            var permissionRead = new AppPermission { Action = new AppAction { Name = "READ" }, Resource = resource  };
+            context.Permissions.Add(permissionRead);
+            context.Permissions.Add(permissionWrite);
+            context.SaveChanges();
+            var role = new AppRole() { Name = "Admin" };
+            context.Roles.Add(role);
+            context.SaveChanges();
+            var rolePermission = new AppRolePermission { RoleId = role.Id, PermissionId = permissionWrite.Id };
+            var rolePermission2 = new AppRolePermission { RoleId = role.Id, PermissionId = permissionRead.Id };
+            context.RolesPermissions.Add(rolePermission);
+            context.RolesPermissions.Add(rolePermission2);
+            context.SaveChanges();
         }
     }
 }

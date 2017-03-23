@@ -108,6 +108,8 @@
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -116,21 +118,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filters\AuthorizeUserAttribute.cs" />
+    <Compile Include="Filters\OwinPermissionExtension.cs" />
     <Compile Include="IdentityModels.cs" />
-    <Compile Include="Migrations\201703170455301_initial.cs" />
-    <Compile Include="Migrations\201703170455301_initial.Designer.cs">
-      <DependentUpon>201703170455301_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201703212243099_Initial.cs" />
+    <Compile Include="Migrations\201703212243099_Initial.Designer.cs">
+      <DependentUpon>201703212243099_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\PermissionsRepository.cs" />
+    <Compile Include="Repositories\RoleRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201703170455301_initial.resx">
-      <DependentUpon>201703170455301_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201703212243099_Initial.resx">
+      <DependentUpon>201703212243099_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

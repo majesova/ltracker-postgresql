@@ -1,0 +1,39 @@
+﻿@model ltracker.Controllers.DetailsAppRoleViewModel
+
+@{
+    ViewBag.Title = "DetailsRole";
+}
+
+<h2>DetailsRole</h2>
+
+<div>
+    <h4>DetailsAppRoleViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        
+    </dl>
+    <div class="panel">
+        <div class="panel-heading">
+            Permisos
+        </div>
+        <div class="panel-body">
+            <ul>
+                @foreach (var perm in Model.Permissions)
+                {
+                    <li>@perm.ResourceName - @perm.ActionName</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
