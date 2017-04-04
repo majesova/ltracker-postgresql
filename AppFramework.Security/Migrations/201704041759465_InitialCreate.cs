@@ -8,39 +8,39 @@ namespace AppFramework.Security.Migrations
         public override void Up()
         {
             CreateTable(
-                "public.app_action",
+                "security.app_actions",
                 c => new
                     {
-                        id = c.Int(nullable: false, identity: true),
+                        key = c.String(nullable: false, maxLength: 128),
                         name = c.String(),
                     })
-                .PrimaryKey(t => t.id);
+                .PrimaryKey(t => t.key);
             
             CreateTable(
-                "public.app_permissions",
+                "security.app_permissions",
                 c => new
                     {
                         id = c.Int(nullable: false, identity: true),
-                        actionid = c.Int(nullable: false),
-                        resourceid = c.Int(nullable: false),
+                        actionkey = c.String(nullable: false, maxLength: 128),
+                        resourcekey = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.id)
-                .ForeignKey("public.app_action", t => t.actionid, cascadeDelete: true)
-                .ForeignKey("public.app_resources", t => t.resourceid, cascadeDelete: true)
-                .Index(t => t.actionid)
-                .Index(t => t.resourceid);
+                .ForeignKey("security.app_actions", t => t.actionkey, cascadeDelete: true)
+                .ForeignKey("security.app_resources", t => t.resourcekey, cascadeDelete: true)
+                .Index(t => t.actionkey)
+                .Index(t => t.resourcekey);
             
             CreateTable(
-                "public.app_resources",
+                "security.app_resources",
                 c => new
                     {
-                        id = c.Int(nullable: false, identity: true),
+                        key = c.String(nullable: false, maxLength: 128),
                         name = c.String(),
                     })
-                .PrimaryKey(t => t.id);
+                .PrimaryKey(t => t.key);
             
             CreateTable(
-                "public.app_roles",
+                "security.app_roles",
                 c => new
                     {
                         id = c.Long(nullable: false, identity: true),
@@ -50,33 +50,33 @@ namespace AppFramework.Security.Migrations
                 .Index(t => t.name, unique: true, name: "RoleNameIndex");
             
             CreateTable(
-                "public.app_userroles",
+                "security.app_userroles",
                 c => new
                     {
                         userid = c.Long(nullable: false),
                         roleid = c.Long(nullable: false),
                     })
                 .PrimaryKey(t => new { t.userid, t.roleid })
-                .ForeignKey("public.app_roles", t => t.roleid, cascadeDelete: true)
-                .ForeignKey("public.app_users", t => t.userid, cascadeDelete: true)
+                .ForeignKey("security.app_roles", t => t.roleid, cascadeDelete: true)
+                .ForeignKey("security.app_users", t => t.userid, cascadeDelete: true)
                 .Index(t => t.userid)
                 .Index(t => t.roleid);
             
             CreateTable(
-                "public.app_rolepermissions",
+                "security.app_rolepermissions",
                 c => new
                     {
                         roleid = c.Long(nullable: false),
                         permissionid = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => new { t.roleid, t.permissionid })
-                .ForeignKey("public.app_permissions", t => t.permissionid, cascadeDelete: true)
-                .ForeignKey("public.app_roles", t => t.roleid, cascadeDelete: true)
+                .ForeignKey("security.app_permissions", t => t.permissionid, cascadeDelete: true)
+                .ForeignKey("security.app_roles", t => t.roleid, cascadeDelete: true)
                 .Index(t => t.roleid)
                 .Index(t => t.permissionid);
             
             CreateTable(
-                "public.app_users",
+                "security.app_users",
                 c => new
                     {
                         id = c.Long(nullable: false, identity: true),
@@ -100,7 +100,7 @@ namespace AppFramework.Security.Migrations
                 .Index(t => t.username, unique: true, name: "UserNameIndex");
             
             CreateTable(
-                "public.app_userclaims",
+                "security.app_userclaims",
                 c => new
                     {
                         id = c.Int(nullable: false, identity: true),
@@ -109,11 +109,11 @@ namespace AppFramework.Security.Migrations
                         claimvalue = c.String(),
                     })
                 .PrimaryKey(t => t.id)
-                .ForeignKey("public.app_users", t => t.userid, cascadeDelete: true)
+                .ForeignKey("security.app_users", t => t.userid, cascadeDelete: true)
                 .Index(t => t.userid);
             
             CreateTable(
-                "public.app_userlogins",
+                "security.app_userlogins",
                 c => new
                     {
                         loginprovider = c.String(nullable: false, maxLength: 128),
@@ -121,40 +121,40 @@ namespace AppFramework.Security.Migrations
                         userid = c.Long(nullable: false),
                     })
                 .PrimaryKey(t => new { t.loginprovider, t.providerkey, t.userid })
-                .ForeignKey("public.app_users", t => t.userid, cascadeDelete: true)
+                .ForeignKey("security.app_users", t => t.userid, cascadeDelete: true)
                 .Index(t => t.userid);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("public.app_userroles", "userid", "public.app_users");
-            DropForeignKey("public.app_userlogins", "userid", "public.app_users");
-            DropForeignKey("public.app_userclaims", "userid", "public.app_users");
-            DropForeignKey("public.app_rolepermissions", "roleid", "public.app_roles");
-            DropForeignKey("public.app_rolepermissions", "permissionid", "public.app_permissions");
-            DropForeignKey("public.app_userroles", "roleid", "public.app_roles");
-            DropForeignKey("public.app_permissions", "resourceid", "public.app_resources");
-            DropForeignKey("public.app_permissions", "actionid", "public.app_action");
-            DropIndex("public.app_userlogins", new[] { "userid" });
-            DropIndex("public.app_userclaims", new[] { "userid" });
-            DropIndex("public.app_users", "UserNameIndex");
-            DropIndex("public.app_rolepermissions", new[] { "permissionid" });
-            DropIndex("public.app_rolepermissions", new[] { "roleid" });
-            DropIndex("public.app_userroles", new[] { "roleid" });
-            DropIndex("public.app_userroles", new[] { "userid" });
-            DropIndex("public.app_roles", "RoleNameIndex");
-            DropIndex("public.app_permissions", new[] { "resourceid" });
-            DropIndex("public.app_permissions", new[] { "actionid" });
-            DropTable("public.app_userlogins");
-            DropTable("public.app_userclaims");
-            DropTable("public.app_users");
-            DropTable("public.app_rolepermissions");
-            DropTable("public.app_userroles");
-            DropTable("public.app_roles");
-            DropTable("public.app_resources");
-            DropTable("public.app_permissions");
-            DropTable("public.app_action");
+            DropForeignKey("security.app_userroles", "userid", "security.app_users");
+            DropForeignKey("security.app_userlogins", "userid", "security.app_users");
+            DropForeignKey("security.app_userclaims", "userid", "security.app_users");
+            DropForeignKey("security.app_rolepermissions", "roleid", "security.app_roles");
+            DropForeignKey("security.app_rolepermissions", "permissionid", "security.app_permissions");
+            DropForeignKey("security.app_userroles", "roleid", "security.app_roles");
+            DropForeignKey("security.app_permissions", "resourcekey", "security.app_resources");
+            DropForeignKey("security.app_permissions", "actionkey", "security.app_actions");
+            DropIndex("security.app_userlogins", new[] { "userid" });
+            DropIndex("security.app_userclaims", new[] { "userid" });
+            DropIndex("security.app_users", "UserNameIndex");
+            DropIndex("security.app_rolepermissions", new[] { "permissionid" });
+            DropIndex("security.app_rolepermissions", new[] { "roleid" });
+            DropIndex("security.app_userroles", new[] { "roleid" });
+            DropIndex("security.app_userroles", new[] { "userid" });
+            DropIndex("security.app_roles", "RoleNameIndex");
+            DropIndex("security.app_permissions", new[] { "resourcekey" });
+            DropIndex("security.app_permissions", new[] { "actionkey" });
+            DropTable("security.app_userlogins");
+            DropTable("security.app_userclaims");
+            DropTable("security.app_users");
+            DropTable("security.app_rolepermissions");
+            DropTable("security.app_userroles");
+            DropTable("security.app_roles");
+            DropTable("security.app_resources");
+            DropTable("security.app_permissions");
+            DropTable("security.app_actions");
         }
     }
 }

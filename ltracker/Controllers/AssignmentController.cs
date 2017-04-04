@@ -12,7 +12,7 @@ using AppFramework.Security.Filters;
 
 namespace ltracker.Controllers
 {
-    [AuthorizeUser(Action="write", Resource ="Assignment")]
+    [AuthorizeUser(ActionKey="R", ResourceKey ="ROLES")]
     public class AssignmentController : BaseController
     {
         // GET: Assignment

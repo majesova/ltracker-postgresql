@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using ltracker.Models;
+using AppFramework.Security.Repositories;
 
 namespace ltracker.Controllers
 {
@@ -60,7 +61,6 @@ namespace ltracker.Controllers
         // GET: Admin
         public ActionResult Index()
         {
-
             return View();
         }
 
@@ -88,21 +88,25 @@ namespace ltracker.Controllers
                 }
                 AddErrors(result);
             }
-
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }
 
         public ActionResult EditUser(long id) {
+
             var context = new AppSecurityContext();
+            var rolRepository = new RoleRepository(context);
+            var userRolRepository = new UserRoleRepository(context);
+
             var user = context.Users.Find(id);
             var model = new EditAppUserViewModel();
             model.Email = user.Email;
             model.Id = user.Id;
-            var roles = context.Roles;
-            var assignedRoles = from r in context.UserRoles
-                                where r.UserId == id
-                                select r;
+
+            var roles = rolRepository.GetAll();
+
+            var assignedRoles = userRolRepository.GetAssignedUserRoles(id);
+
             if (assignedRoles.Count() > 0)
             {
                 model.SelectedRoles = assignedRoles.Select(x => x.RoleId).ToArray();
@@ -116,34 +120,40 @@ namespace ltracker.Controllers
 
         [HttpPost]
         public ActionResult EditUser(long id, EditAppUserViewModel model) {
+
             var context = new AppSecurityContext();
+            var rolRepository = new RoleRepository(context);
+            var userRolRepository = new UserRoleRepository(context);
 
-            if (ModelState.IsValid) {
-
+            if (ModelState.IsValid)
+            {
                 //Se asignan los roles
                 var user = mapper.Map<AppUser>(model);
-
-                var assignedRoles = from r in context.UserRoles
-                                    where r.UserId == user.Id
-                                    select r;
-
-                foreach (var a in assignedRoles) {
-                    context.UserRoles.Remove(a);
+                var assignedRoles = userRolRepository.GetAssignedUserRoles(id);
+                var selectedRoles = new List<AppRole>();
+                if (model.SelectedRoles != null)
+                { 
+                    foreach (var rolId in model.SelectedRoles)
+                    {
+                        selectedRoles.Add(new AppRole { Id = rolId });
+                    }
                 }
-
-                foreach (var rolId in model.SelectedRoles) {
-                    AppUserRole appUserRole = new AppUserRole { RoleId = rolId, UserId = user.Id };
-                    context.UserRoles.Add(appUserRole);
+                userRolRepository.UpdateUserWithRoles(user, selectedRoles);
+                try
+                {
+                    context.SaveChanges();
                 }
-
-                context.SaveChanges();
+                catch (Exception ex) {
+                    
+                }
                 return RedirectToAction("Users");
             }
 
-            var roles = context.Roles;
+            var roles = rolRepository.GetAll();
             model.AvailableRoles = mapper.Map<ICollection<AppRoleViewModel>>(roles);
             return View(model);
         }
+
 
 
         private void AddErrors(IdentityResult result)
@@ -153,14 +163,32 @@ namespace ltracker.Controllers
                 ModelState.AddModelError("", error);
             }
         }
+
+
+        public ActionResult DetailsUser(int id)
+        {
+            var context = new AppSecurityContext();
+            var userRepository = new UserRepository(context);
+            var roleRepository = new RoleRepository(context);
+            var user = userRepository.Find(id);
+            var roles = roleRepository.GetRolesByUserId(user.Id);
+            var model = new DetailsAppUserViewModel();
+            model.Email = user.Email;
+            model.AssignedRoles = new List<AppRoleViewModel>();
+            foreach (var item in roles) {
+                model.AssignedRoles.Add(new AppRoleViewModel { Id = item.Id, Name = item.Name });
+            }
+            return View(model);
+        }
+
         #endregion
 
         #region Roles
         public ActionResult Roles() {
             var context = new AppSecurityContext();
-            var roles = context.Roles;
+            var rolRepository = new RoleRepository(context);
+            var roles = rolRepository.GetAll();
             var models = mapper.Map<IEnumerable<AppRoleViewModel>>(roles);
-
             return View(models);
         }
 
@@ -168,7 +196,8 @@ namespace ltracker.Controllers
         {
             var context = new AppSecurityContext();
             var model = new NewAppRoleViewModel();
-            var permissions = context.Permissions.Include(x => x.Action).Include(x => x.Resource).ToList();
+            var permissionRepository = new PermissionRepository(context);
+            var permissions = permissionRepository.GetAll();
             model.AvailablePermissions = mapper.Map<ICollection<AppPermissionViewModel>>(permissions);
             return View(model);
         }
@@ -177,30 +206,38 @@ namespace ltracker.Controllers
         public ActionResult CreateRole(NewAppRoleViewModel model) {
 
             var context = new AppSecurityContext();
+            var rolRepository = new RoleRepository(context);
+            var permissionRepository = new PermissionRepository(context);
+            var rolePermissionRepository = new RolePermissionRepository(context);
+
             if (ModelState.IsValid) {
+
                 var role = mapper.Map<AppRole>(model);
-                context.Roles.Add(role);
-                if (model.SelectedPermissions == null) model.SelectedPermissions = new int[0];
+                rolRepository.Add(role);
+
+                if (model.SelectedPermissions == null)
+                    model.SelectedPermissions = new int[0];
+
                 foreach (var permissionId in model.SelectedPermissions) {
-                    context.RolesPermissions.Add(new AppRolePermission { PermissionId = permissionId, RoleId = role.Id });
+                    rolePermissionRepository.Add(new AppRolePermission { PermissionId = permissionId, RoleId = role.Id });   
                 }
                 context.SaveChanges();
                 return RedirectToAction("Roles", "Admin");
             }
-            var permissions = context.Permissions.Include(x => x.Action).Include(x => x.Resource).ToList();
+
+            var permissions = permissionRepository.GetAll();
             model.AvailablePermissions = mapper.Map<ICollection<AppPermissionViewModel>>(permissions);
             return View(model);
         }
 
         public ActionResult EditRole(long id) {
             var context = new AppSecurityContext();
+            var rolePermissionRepository = new RolePermissionRepository(context);
+            var permissionRepository = new PermissionRepository(context);
+
             var role = context.Roles.Find(id);
-            var permissionsResult = from r in context.Roles
-                                    join rolPerm in context.RolesPermissions on r.Id equals rolPerm.RoleId
-                                    join perms in context.Permissions on rolPerm.PermissionId equals perms.Id
-                                    where r.Id == role.Id
-                                    select perms;
-            var permissions = context.Permissions.Include(x => x.Action).Include(x => x.Resource).ToList();
+            var permissionsResult = rolePermissionRepository.GetPermissionByRoleId(id);
+            var permissions = permissionRepository.GetAll();
             var model = mapper.Map<EditAppRoleViewModel>(role);
 
             if (permissionsResult.Count() >0 )
@@ -214,32 +251,18 @@ namespace ltracker.Controllers
         [HttpPost]
         public ActionResult EditRole(long id, EditAppRoleViewModel model) {
             var context = new AppSecurityContext();
+            var rolePermissionRepository = new RolePermissionRepository(context);
+            var permissionRepository = new PermissionRepository(context);
+            var roleRepostory = new RoleRepository(context);
+
             if (ModelState.IsValid) {
 
                 var role = mapper.Map<AppRole>(model);
-
-                var permissionsResult = from r in context.Roles
-                                        join rolPerm in context.RolesPermissions on r.Id equals rolPerm.RoleId
-                                        join perms in context.Permissions on rolPerm.PermissionId equals perms.Id
-                                        where r.Id == id
-                                        select rolPerm;
-
-                if (permissionsResult.Count() > 0)
-                {
-                    foreach (var rolePerm in permissionsResult) {
-                        context.RolesPermissions.Remove(rolePerm);
-                    }
-                }
-
-                if (model.SelectedPermissions == null) model.SelectedPermissions = new int[0];
-                foreach (var permissionId in model.SelectedPermissions)
-                {
-                    context.RolesPermissions.Add(new AppRolePermission { PermissionId = permissionId, RoleId = role.Id });
-                }
+                roleRepostory.UpdateRoleWithPermissions(role, model.SelectedPermissions);
                 context.SaveChanges();
                 return RedirectToAction("Roles", "Admin");
             }
-            var permissions = context.Permissions.Include(x => x.Action).Include(x => x.Resource).ToList();
+            var permissions = roleRepostory.GetAll();
             if (permissions.Count() > 0)
                 model.AvailablePermissions = mapper.Map<ICollection<AppPermissionViewModel>>(permissions);
 
@@ -249,18 +272,21 @@ namespace ltracker.Controllers
 
 
         public ActionResult DetailsRole(int id) {
+
             var context = new AppSecurityContext();
-            var role = context.Roles.Find(id);
-            var permissionsResult =  from r in context.Roles
-                               join rolPerm in context.RolesPermissions on r.Id equals rolPerm.RoleId
-                               join perms in context.Permissions on rolPerm.PermissionId equals perms.Id
-                               where r.Id == role.Id
-                               select new { ActionName= perms.Action.Name, ResourceName = perms.Resource.Name };
+            var roleRepository = new RoleRepository(context);
+            var rolePermissionRepository = new RolePermissionRepository(context);
+
+            var role = roleRepository.Find(id);
+
+            var permissionsResult = rolePermissionRepository.GetPermissionsByRoleIncludingActionResource(id);
 
             var model = mapper.Map<DetailsAppRoleViewModel>(role);
             model.Permissions = new List<AppPermissionViewModel>();
+
             foreach (var result in permissionsResult) {
-                model.Permissions.Add(new AppPermissionViewModel { ActionName = result.ActionName, ResourceName = result.ResourceName });
+                
+                model.Permissions.Add(new AppPermissionViewModel { ActionName = result.Action.Name, ResourceName = result.Resource.Name });
             }
          
             return View(model);

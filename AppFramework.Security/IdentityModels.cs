@@ -44,20 +44,20 @@ namespace AppFramework.Security
     {
         public int Id { get; set; }
         public AppAction Action { get; set; }
-        public int ActionId { get; set; }
+        public string ActionKey { get; set; }
         public AppResource Resource { get; set; }
-        public int ResourceId { get; set; }
+        public string ResourceKey { get; set; }
     }
 
     public class AppResource
     {
-        public int Id { get; set; }
+        public string Key { get; set; }
         public string Name { get; set; }
     }
 
     public class AppAction
     {
-        public int Id { get; set; }
+        public string Key { get; set; }
         public string Name { get; set; }
     }
 
@@ -68,8 +68,6 @@ namespace AppFramework.Security
         public int PermissionId { get; set; }
         public AppPermission Permission { get; set; }
     }
-
-
     
     public class AppUserStore : UserStore<AppUser, AppRole, long, AppUserLogin, AppUserRole, AppUserClaim>
     {
@@ -107,6 +105,7 @@ namespace AppFramework.Security
         {
         }
     }
+
     public class AppUserManager : UserManager<AppUser, long>
     {
         public AppUserManager(AppUserStore store) : base(store)

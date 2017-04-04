@@ -1,11 +1,8 @@
 namespace AppFramework.Security.Migrations
 {
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<AppFramework.Security.AppSecurityContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<AppSecurityContext>
     {
         public Configuration()
         {
@@ -13,20 +10,64 @@ namespace AppFramework.Security.Migrations
             MigrationsDirectory = @"Migrations";
         }
 
-        protected override void Seed(AppFramework.Security.AppSecurityContext context)
+        protected override void Seed(AppSecurityContext context)
         {
-            //  This method will be called after migrating to the latest version.
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            //Acciones
+            var read = new AppAction { Key = "R", Name = "Leer" };
+            var write = new AppAction { Key = "W", Name = "Escribir" };
+            var modify = new AppAction { Key = "M", Name = "Modificar" };
+            var delete = new AppAction { Key = "D", Name = "Eliminar" };
+            var access = new AppAction { Key = "A", Name = "Acceder" };
+
+            context.Actions.Add(read);
+            context.Actions.Add(write);
+            context.Actions.Add(modify);
+            context.Actions.Add(delete);
+            context.Actions.Add(access);
+
+            //Recursos
+            var roles = new AppResource { Key = "ROLES", Name= "Roles" };
+             var usuarios = new AppResource { Key = "USERS", Name = "Usuarios" };
+
+             context.Resources.Add(roles);
+             context.Resources.Add(usuarios);
+            
+            var adminRol = new AppRole { Name = "Administrator" };
+
+            var rRoles = new AppPermission { Action = read, Resource = roles };
+            var wRoles = new AppPermission { Action =write , Resource = roles };
+            var mRoles = new AppPermission { Action = modify, Resource = roles };
+            var dRoles = new AppPermission { Action = delete, Resource = roles };
+
+            var rUsers = new AppPermission { Action = read, Resource = usuarios };
+            var wUsers= new AppPermission { Action = write, Resource = usuarios };
+            var mUsers = new AppPermission { Action = modify, Resource = usuarios };
+            var dUsers = new AppPermission { Action = delete, Resource = usuarios };
+
+            context.Permissions.Add(rRoles);
+            context.Permissions.Add(wRoles);
+            context.Permissions.Add(mRoles);
+            context.Permissions.Add(dRoles);
+
+            context.Permissions.Add(rUsers);
+            context.Permissions.Add(wUsers);
+            context.Permissions.Add(mUsers);
+            context.Permissions.Add(dUsers);
+
+            context.Roles.Add(adminRol);
+
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = rRoles });
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = wRoles });
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = mRoles });
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = dRoles });
+
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = rUsers });
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = wUsers });
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = mUsers });
+            context.RolesPermissions.Add(new AppRolePermission { Role = adminRol, Permission = dUsers });
+
+            context.SaveChanges();
         }
     }
 }

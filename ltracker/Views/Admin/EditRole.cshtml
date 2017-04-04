@@ -27,21 +27,43 @@
         <div class="form-group">
             <h5>Permisos</h5>
             <div class="col-md-10">
-                @foreach (var perm in Model.AvailablePermissions)
-                {
-                    var selected = "";
-                    if (Model.SelectedPermissions != null)
+                @{
+
+                    var resources = Model.AvailablePermissions.Select(x => x.ResourceName).Distinct();
+                    foreach (var res in resources)
                     {
-                        if (Model.SelectedPermissions.Contains(perm.Id))
-                        {
-                            selected = "checked";
-                        }
+                        <div class="col-md-2">
+                            <div class="panel panel-primary ">
+                                <div class="panel-heading">
+                                    @res
+                                </div>
+                                <div class="panel-body">
+                                    <div class="container">
+                                        @foreach (var perm in Model.AvailablePermissions)
+                                        {
+
+                                            var selected = "";
+                                            if (Model.SelectedPermissions != null)
+                                            {
+                                                if (Model.SelectedPermissions.Contains(perm.Id))
+                                                {
+                                                    selected = "checked";
+                                                }
+                                            }
+                                            if (perm.ResourceName != res) { continue; }
+                                            <div class="checkbox">
+                                                <input name="SelectedPermissions" type="checkbox" value="@perm.Id" @selected />
+                                                @perm.ActionName
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     }
-                    <div class="checkbox-inline">
-                        <input name="SelectedPermissions" type="checkbox" value="@perm.Id" @selected />
-                        @perm.ResourceName - @perm.ActionName
-                    </div>
                 }
+
+
             </div>
         </div>
 

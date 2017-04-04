@@ -13,7 +13,7 @@ namespace AppFramework.Security.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201704041455075_InitialCreate"; }
+            get { return "201704041706152_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

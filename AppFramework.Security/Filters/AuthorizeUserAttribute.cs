@@ -14,8 +14,8 @@ namespace AppFramework.Security.Filters
     public class AuthorizeUserAttribute : AuthorizeAttribute
     {
         
-        public string Action { get; set; }
-        public string Resource { get; set; }
+        public string ActionKey { get; set; }
+        public string ResourceKey { get; set; }
 
         private AuthorizationContext _currentContext;
 
@@ -34,8 +34,8 @@ namespace AppFramework.Security.Filters
             var userId = user.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
             AppSecurityContext context = new AppSecurityContext();
             long id = long.Parse(userId);
-            var repository = new AppPermissionsRepository(context);
-            var valid = repository.HasPermission(id, Action, Resource);
+            var repository = new PermissionRepository(context);
+            var valid = repository.HasPermission(id, ActionKey, ResourceKey);
             return valid;
         }
 

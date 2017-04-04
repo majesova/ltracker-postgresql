@@ -14,14 +14,14 @@ namespace ltracker.Controllers
         public ActionResult Index()
         {
             //Ejemplo de como obtener el usuario en sesión
-            var permission =  Request.GetOwinContext().HasPermission("WRITE", "Assignment");
+            var permission =  Request.GetOwinContext().HasPermission("W", "ROLES");
             if (permission) {
-                ViewBag.Resultado = "SI TIENE PERMISO WRITE - Assingment";
+                ViewBag.Resultado = "SI TIENE PERMISO WRITE - ROLES";
             }
 
-            var permission2 = Request.GetOwinContext().HasPermission("ACCESS", "Assignment");
+            var permission2 = Request.GetOwinContext().HasPermission("R", "ROLES");
             if (!permission2)
-                ViewBag.Resultado2 = "NO TIENE PERMISO ACCESS - Assingment";
+                ViewBag.Resultado2 = "NO TIENE PERMISO Read - ROLES";
             
             return View();
         }

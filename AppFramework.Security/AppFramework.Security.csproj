@@ -122,23 +122,29 @@
     <Compile Include="Filters\AuthorizeUserAttribute.cs" />
     <Compile Include="Filters\OwinPermissionExtension.cs" />
     <Compile Include="IdentityModels.cs" />
-    <Compile Include="Migrations\201704041455075_InitialCreate.cs" />
-    <Compile Include="Migrations\201704041455075_InitialCreate.Designer.cs">
-      <DependentUpon>201704041455075_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201704041759465_InitialCreate.cs" />
+    <Compile Include="Migrations\201704041759465_InitialCreate.Designer.cs">
+      <DependentUpon>201704041759465_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\PermissionsRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
+    <Compile Include="Repositories\RolePermissionRepository.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Repositories\UserRoleRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704041455075_InitialCreate.resx">
-      <DependentUpon>201704041455075_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201704041759465_InitialCreate.resx">
+      <DependentUpon>201704041759465_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ResultsModel\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

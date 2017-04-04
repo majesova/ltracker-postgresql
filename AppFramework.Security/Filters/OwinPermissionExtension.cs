@@ -14,7 +14,7 @@ namespace AppFramework.Security.Filters
 {
     public static class SecurityExtension
     {
-        public static bool HasPermission(this IOwinContext context, string actionName, string resourceName)
+        public static bool HasPermission(this IOwinContext context, string actionKey, string resourceKey)
         {
             var user = (ClaimsIdentity)HttpContext.Current.User.Identity;
             if (!user.IsAuthenticated)
@@ -24,8 +24,8 @@ namespace AppFramework.Security.Filters
             var userId = user.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
             AppSecurityContext contextSecurity = new AppSecurityContext();
             long id = long.Parse(userId);
-            var repository = new AppPermissionsRepository(contextSecurity);
-            var valid = repository.HasPermission(id, actionName, resourceName);
+            var repository = new PermissionRepository(contextSecurity);
+            var valid = repository.HasPermission(id, actionKey, resourceKey);
             return valid;
         }
     }

@@ -4,10 +4,9 @@
     ViewBag.Title = "DetailsRole";
 }
 
-<h2>DetailsRole</h2>
+<h2>Detalle Rol</h2>
 
-<div>
-    <h4>DetailsAppRoleViewModel</h4>
+<div class="row">
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -19,21 +18,31 @@
         </dd>
         
     </dl>
-    <div class="panel">
-        <div class="panel-heading">
-            Permisos
-        </div>
-        <div class="panel-body">
-            <ul>
-                @foreach (var perm in Model.Permissions)
-                {
-                    <li>@perm.ResourceName - @perm.ActionName</li>
+ 
+                @{ var resources = Model.Permissions.Select(x => x.ResourceName).Distinct();
+
+                    foreach (var res in resources)
+                    {
+                        <div class="col-md-3">
+                        <div class="table table-bordered col-md-3">
+                            <b> @res</b>
+                            <ul>
+                                @foreach (var perm in Model.Permissions)
+                                {
+                                    if (perm.ResourceName != res) { continue; }
+                                    <li> @perm.ActionName</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    }
                 }
-            </ul>
-        </div>
-    </div>
+
+
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<div class="row">
+    <p>
+        @Html.ActionLink("Edit", "EditRole", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</div>

@@ -1,27 +1,45 @@
 ﻿using System.Linq;
+using System.Data.Entity;
 
 namespace AppFramework.Security.Repositories
 {
-    public class AppPermissionsRepository
+    /// <summary>
+    /// Operaciones con permisos
+    /// </summary>
+    public class PermissionRepository
     {
         private AppSecurityContext _context;
-        public AppPermissionsRepository(AppSecurityContext context)
+        public PermissionRepository(AppSecurityContext context)
         {
             _context = context;
         }
 
-        public bool HasPermission(long userId, string actionName, string resourceName) {
+        public IQueryable GetAll() {
+            return _context.Permissions.Include(x => x.Action).Include(x => x.Resource);
+        }
 
-            var permissions = (from r in _context.Roles
-                       join userRoles in _context.UserRoles on r.Id equals userRoles.RoleId
-                       join rolPerm in _context.RolesPermissions on userRoles.RoleId equals rolPerm.RoleId
-                       join perms in _context.Permissions on rolPerm.PermissionId equals perms.Id
-                       where userRoles.UserId == userId
-                       select new { Action = perms.Action.Name, Resource = perms.Resource.Name }).Distinct();
+        public void Add(AppPermission permission) {
+            _context.Permissions.Add(permission);
+        }
+        
 
-            foreach( var appPerm in permissions)
+        /// <summary>
+        /// Valida si entre los permisos contenidos en los roles del usuario está una combinación que satisfaga action - resource
+        /// </summary>
+        /// <param name="userId">Identificador del usuario</param>
+        /// <param name="actionKey">Clave de la acción</param>
+        /// <param name="resourceKey">Clave del recurso</param>
+        /// <returns>SI/NO</returns>
+        public bool HasPermission(long userId, string actionKey, string resourceKey) {
+
+            var permissions = (from r in _context.UserRoles
+                           join rolPerm in _context.RolesPermissions on r.RoleId equals rolPerm.RoleId
+                           where r.UserId == userId
+                           select new { ActionKey = rolPerm.Permission.Action.Key, ResourceKey = rolPerm.Permission.Resource.Key }).Distinct();
+
+            foreach ( var appPerm in permissions)
             {
-                if (appPerm.Action.ToLower().CompareTo(actionName.ToLower()) == 0 && appPerm.Resource.ToLower().CompareTo(resourceName.ToLower()) == 0)
+                if (appPerm.ActionKey.ToLower().CompareTo(actionKey.ToLower()) == 0 && appPerm.ResourceKey.ToLower().CompareTo(resourceKey.ToLower()) == 0)
                     return true;
             }
 

@@ -17,7 +17,7 @@ namespace AppFramework.Security
         }
 
         public DbSet<AppResource> Resources { get; set; }
-        public DbSet<AppAction> Actions { get; }
+        public DbSet<AppAction> Actions { get; set; }
         public DbSet<AppPermission> Permissions { get; set; }
         public DbSet<AppUserRole> UserRoles { get; set; }
         public DbSet<AppRolePermission> RolesPermissions { get; set; }
@@ -32,7 +32,7 @@ namespace AppFramework.Security
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.HasDefaultSchema("public");
+            modelBuilder.HasDefaultSchema("security");
             //nombres de propiedades en minúscula como pide postgresql
             modelBuilder.Properties().Configure(p => p.HasColumnName(p.ClrPropertyInfo.Name.ToLower()));
             //nombre de tablas en minúscula como lo pide postgresql
@@ -52,21 +52,18 @@ namespace AppFramework.Security
             modelBuilder.Entity<AppUserRole>().ToTable("app_userroles");
             modelBuilder.Entity<AppUserLogin>().ToTable("app_userlogins");
 
-            modelBuilder.Entity<AppPermission>().ToTable("app_permissions").HasKey(p => p.Id);
-            modelBuilder.Entity<AppPermission>().Property(x => x.Id).HasDatabaseGeneratedOption(databaseGeneratedOption: DatabaseGeneratedOption.Identity);
-
             modelBuilder.Entity<AppRolePermission>().ToTable("app_rolepermissions").HasKey(x => new { x.RoleId, x.PermissionId });
 
             //Resource and Action
-            modelBuilder.Entity<AppResource>().ToTable("app_resources").HasKey(x => x.Id);
-            modelBuilder.Entity<AppResource>().Property(x => x.Id).HasDatabaseGeneratedOption(databaseGeneratedOption: DatabaseGeneratedOption.Identity);
+            modelBuilder.Entity<AppResource>().ToTable("app_resources").HasKey(x => x.Key);
+            modelBuilder.Entity<AppAction>().ToTable("app_actions").HasKey(x => x.Key);
 
-            modelBuilder.Entity<AppAction>().ToTable("app_action").HasKey(x => x.Id);
-            modelBuilder.Entity<AppAction>().Property(x => x.Id).HasDatabaseGeneratedOption(databaseGeneratedOption: DatabaseGeneratedOption.Identity);
+            modelBuilder.Entity<AppPermission>().ToTable("app_permissions").HasKey(p => p.Id);
+            modelBuilder.Entity<AppPermission>().Property(x => x.Id).HasDatabaseGeneratedOption(databaseGeneratedOption: DatabaseGeneratedOption.Identity);
+
             //Action-Resource combination in Permission
-            modelBuilder.Entity<AppPermission>().HasRequired(x => x.Action).WithMany().HasForeignKey(x => x.ActionId);
-            modelBuilder.Entity<AppPermission>().HasRequired(x => x.Resource).WithMany().HasForeignKey(x => x.ResourceId);
-
+            modelBuilder.Entity<AppPermission>().HasRequired(x => x.Action).WithMany().HasForeignKey(x => x.ActionKey);
+            modelBuilder.Entity<AppPermission>().HasRequired(x => x.Resource).WithMany().HasForeignKey(x => x.ResourceKey);
         }
     }
 }
