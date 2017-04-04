@@ -94,9 +94,9 @@
     <Compile Include="Entities\Individual.cs" />
     <Compile Include="Entities\Topic.cs" />
     <Compile Include="LearningContext.cs" />
-    <Compile Include="Migrations\201703161649074_initial.cs" />
-    <Compile Include="Migrations\201703161649074_initial.Designer.cs">
-      <DependentUpon>201703161649074_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201704041452428_InitialCreate.cs" />
+    <Compile Include="Migrations\201704041452428_InitialCreate.Designer.cs">
+      <DependentUpon>201704041452428_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -111,8 +111,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201703161649074_initial.resx">
-      <DependentUpon>201703161649074_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201704041452428_InitialCreate.resx">
+      <DependentUpon>201704041452428_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

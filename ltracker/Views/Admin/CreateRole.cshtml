@@ -1,4 +1,4 @@
-﻿@model ltracker.Controllers.NewAppRoleViewModel
+﻿@model ltracker.Models.NewAppRoleViewModel
 
 @{
     ViewBag.Title = "CreateRole";
@@ -7,10 +7,10 @@
 <h2>CreateRole</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>NewAppRoleViewModel</h4>
         <hr />
@@ -25,21 +25,34 @@
         <div class="form-group">
             <h5>Permisos</h5>
             <div class="col-md-10">
-                @foreach (var perm in Model.AvailablePermissions)
-                {
-                    var selected = "";
-                    if (Model.SelectedPermissions != null)
+                @{
+
+                    var resources = Model.AvailablePermissions.Select(x => x.ResourceName);
+                    foreach (var res in resources)
                     {
-                        if (Model.SelectedPermissions.Contains(perm.Id))
+                        <h5>res</h5>
+                        foreach (var perm in Model.AvailablePermissions)
                         {
-                            selected = "checked";
+
+                            var selected = "";
+                            if (Model.SelectedPermissions != null)
+                            {
+                                if (Model.SelectedPermissions.Contains(perm.Id))
+                                {
+                                    selected = "checked";
+                                }
+                            }
+                            if (perm.ResourceName != res) { continue; }
+                            <div class="checkbox-inline">
+                                <input name="SelectedPermissions" type="checkbox" value="@perm.Id" @selected />
+                                @perm.ResourceName @perm.ActionName
+                            </div>
                         }
+
                     }
-                    <div class="checkbox-inline">
-                        <input name="SelectedPermissions" type="checkbox" value="@perm.Id" @selected /> 
-                        @perm.ResourceName - @perm.ActionName 
-                    </div>
                 }
+
+               
             </div>
         </div>
 

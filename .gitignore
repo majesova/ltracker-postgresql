@@ -9,3 +9,4 @@ packages/
 /ltracker/obj/Debug
 /AppFramework.Security/bin/Debug
 /AppFramework.Security/obj/Debug
+/AppFramework.Security/bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml

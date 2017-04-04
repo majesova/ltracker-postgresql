@@ -118,12 +118,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSecurityContext.cs" />
     <Compile Include="Filters\AuthorizeUserAttribute.cs" />
     <Compile Include="Filters\OwinPermissionExtension.cs" />
     <Compile Include="IdentityModels.cs" />
-    <Compile Include="Migrations\201703212243099_Initial.cs" />
-    <Compile Include="Migrations\201703212243099_Initial.Designer.cs">
-      <DependentUpon>201703212243099_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201704041455075_InitialCreate.cs" />
+    <Compile Include="Migrations\201704041455075_InitialCreate.Designer.cs">
+      <DependentUpon>201704041455075_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -135,8 +136,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201703212243099_Initial.resx">
-      <DependentUpon>201703212243099_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201704041455075_InitialCreate.resx">
+      <DependentUpon>201704041455075_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -27,7 +27,6 @@ namespace AppFramework.Security.Filters
             var repository = new AppPermissionsRepository(contextSecurity);
             var valid = repository.HasPermission(id, actionName, resourceName);
             return valid;
-
         }
     }
 }

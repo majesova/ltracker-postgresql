@@ -10,6 +10,7 @@ namespace ltracker.Data.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+            MigrationsDirectory = @"Migrations";
         }
 
         protected override void Seed(ltracker.Data.LearningContext context)
@@ -26,9 +27,6 @@ namespace ltracker.Data.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-            context.Topics.Add(new Entities.Topic { Name = "Database", Description="Database topics"});
-            context.Topics.Add(new Entities.Topic { Name = "Architecture", Description = "Arcuitecture topics" });
-            context.Topics.Add(new Entities.Topic { Name = "Programming", Description = "Programming topics" });
         }
     }
 }
