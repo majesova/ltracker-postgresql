@@ -1,19 +1,23 @@
 ﻿using Microsoft.Owin;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity;
-using System.Web.Mvc;
 using AppFramework.Security.Repositories;
 using System.Web;
 
 namespace AppFramework.Security.Filters
 {
-    public static class SecurityExtension
+    /// <summary>
+    /// Extensiones de seguridad
+    /// </summary>
+    public static class SecurityExtensions
     {
+        /// <summary>
+        /// Verifica si un usuario tiene o no permiso para realizar una acción
+        /// </summary>
+        /// <param name="context">Contexto de seguridad</param>
+        /// <param name="actionKey">Clave de la acción que se desea realizar</param>
+        /// <param name="resourceKey">Clave del recurso que se desea acceder</param>
+        /// <returns>true/false</returns>
         public static bool HasPermission(this IOwinContext context, string actionKey, string resourceKey)
         {
             var user = (ClaimsIdentity)HttpContext.Current.User.Identity;

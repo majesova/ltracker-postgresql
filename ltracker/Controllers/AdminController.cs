@@ -174,6 +174,7 @@ namespace ltracker.Controllers
             var roles = roleRepository.GetRolesByUserId(user.Id);
             var model = new DetailsAppUserViewModel();
             model.Email = user.Email;
+            model.Id = user.Id;
             model.AssignedRoles = new List<AppRoleViewModel>();
             foreach (var item in roles) {
                 model.AssignedRoles.Add(new AppRoleViewModel { Id = item.Id, Name = item.Name });
