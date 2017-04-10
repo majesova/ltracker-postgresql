@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AppFramework.Security.Repositories
 {
+    /// <summary>
+    /// Operaciones de UserRole con base de datos
+    /// </summary>
     public class UserRoleRepository
     {
         private AppSecurityContext _context;
@@ -13,7 +13,11 @@ namespace AppFramework.Security.Repositories
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Actualiz un usuario con sus roles
+        /// </summary>
+        /// <param name="user">Usuario a actualizar</param>
+        /// <param name="roles">Roles asignados</param>
         public void UpdateUserWithRoles(AppUser user, List<AppRole> roles) {
 
             var assignedRoles = GetAssignedUserRoles(user.Id);
@@ -31,7 +35,11 @@ namespace AppFramework.Security.Repositories
             }
 
         }
-
+        /// <summary>
+        /// Devuelve los roles especificados a un usuario
+        /// </summary>
+        /// <param name="id">Identificador del usuario</param>
+        /// <returns>Lista de AppUserRole</returns>
         public IQueryable<AppUserRole> GetAssignedUserRoles(long id)
         {
             var assignedRoles = from r in _context.UserRoles

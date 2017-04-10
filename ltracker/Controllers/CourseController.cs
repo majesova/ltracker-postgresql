@@ -9,11 +9,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Linq.Expressions;
+using AppFramework.Security.Filters;
 
 namespace ltracker.Controllers
 {
-    
-     public class CourseController : BaseController
+    [AuthorizeUser(ActionKey = "R", ResourceKey = "COURSE")]
+    public class CourseController : BaseController
     {
         
         // GET: Course

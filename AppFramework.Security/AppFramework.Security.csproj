@@ -120,14 +120,32 @@
   <ItemGroup>
     <Compile Include="AppSecurityContext.cs" />
     <Compile Include="Filters\AuthorizeUserAttribute.cs" />
+    <Compile Include="Filters\OwinMenuExtension.cs" />
     <Compile Include="Filters\OwinPermissionExtension.cs" />
+    <Compile Include="HtmlHelpers\MenuHelper.cs" />
     <Compile Include="IdentityModels.cs" />
+    <Compile Include="Menus\AppMenu.cs" />
+    <Compile Include="Menus\AppMenuItem.cs" />
     <Compile Include="Migrations\201704041759465_InitialCreate.cs" />
     <Compile Include="Migrations\201704041759465_InitialCreate.Designer.cs">
       <DependentUpon>201704041759465_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704051712157_DataMenus.cs" />
+    <Compile Include="Migrations\201704051712157_DataMenus.Designer.cs">
+      <DependentUpon>201704051712157_DataMenus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704051727069_DataMenusMenuname.cs" />
+    <Compile Include="Migrations\201704051727069_DataMenusMenuname.Designer.cs">
+      <DependentUpon>201704051727069_DataMenusMenuname.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704052053083_MenuItemNullable.cs" />
+    <Compile Include="Migrations\201704052053083_MenuItemNullable.Designer.cs">
+      <DependentUpon>201704052053083_MenuItemNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\MenuItemRepository.cs" />
+    <Compile Include="Repositories\MenuRepository.cs" />
     <Compile Include="Repositories\PermissionsRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\RolePermissionRepository.cs" />
@@ -136,11 +154,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201704041759465_InitialCreate.resx">
       <DependentUpon>201704041759465_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704051712157_DataMenus.resx">
+      <DependentUpon>201704051712157_DataMenus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704051727069_DataMenusMenuname.resx">
+      <DependentUpon>201704051727069_DataMenusMenuname.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704052053083_MenuItemNullable.resx">
+      <DependentUpon>201704052053083_MenuItemNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

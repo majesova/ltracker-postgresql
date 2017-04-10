@@ -1,0 +1,83 @@
+﻿@model ltracker.Models.MenuItemListViewModel
+
+@{
+    ViewBag.Title = "MenuItems";
+}
+
+<h2>MenuItems</h2>
+
+<p>
+    
+   
+
+    <br />
+    <div class="panel">
+        <b>Key</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.DisplayFor(x => x.MenuKey)<br />
+        <b>Name</b>&nbsp;
+        @Html.DisplayFor(x => x.MenuName)<br />
+    </div>
+
+    @Html.HiddenFor(x=>x.MenuKey)
+    @Html.HiddenFor(x => x.MenuName)
+</p>
+
+<p>
+    @Html.ActionLink("Nuevo Item", "CreateMenuItem", new { id = Model.MenuKey })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Orden
+        </th>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Ruta
+        </th>
+        <th>
+            Padre
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.MenuItems) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Order)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PathToResource)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Parent.Name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditMenuItem", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+   
+    </tr>
+    <tr>
+        
+        <td colspan="4">
+            <div class="text-danger">
+                @ViewBag.Error
+            </div>
+        </td>
+    </tr>
+}
+    @if (Model.MenuItems.Count == 0) {
+        <tr><td colspan="4">
+            <span class="alert text-info text-center">
+                Este menu no tiene elementos
+            </span>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using AppFramework.Security.Filters;
+@using AppFramework.Security.HtmlHelpers;
+
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -7,7 +10,6 @@
     <title>@ViewBag.Title - Learning Tracker</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -23,16 +25,26 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Personas", "Index", "Individual")</li>
-                    <li>@Html.ActionLink("Asignaciones", "Index", "Assignment")</li>
-                    <li>@Html.ActionLink("Cursos", "Index", "Course")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Admin", "Index", "Admin")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+                    @{
+                        //Ejemplo de implementación de menú
+                        var menuItems = Request.GetOwinContext().GetUserMenu();
+                        @Html.BoostrapMenu(menuItems)
+
+                    }
+                    </ul>
+                
+                   <!--<ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Personas", "Index", "Individual")</li>
+                        <li>@Html.ActionLink("Asignaciones", "Index", "Assignment")</li>
+                        <li>@Html.ActionLink("Cursos", "Index", "Course")</li>
+                        <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                        <li>@Html.ActionLink("Admin", "Index", "Admin")</li>
+                    </ul>-->
+
+                    @Html.Partial("_LoginPartial")
+</div>
         </div>
     </div>
     <div class="container body-content">

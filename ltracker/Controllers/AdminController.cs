@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using ltracker.Models;
 using AppFramework.Security.Repositories;
+using AppFramework.Security.Menus;
 
 namespace ltracker.Controllers
 {
@@ -39,6 +40,20 @@ namespace ltracker.Controllers
                 x.CreateMap<AppPermissionViewModel, AppPermission>();
 
                 x.CreateMap<DetailsAppRoleViewModel, AppRole>().ReverseMap();
+
+                x.CreateMap<MenuViewModel, AppMenu>().ReverseMap();
+
+                x.CreateMap<NewMenuViewModel, AppMenu>().ReverseMap();
+
+                x.CreateMap<EditMenuViewModel, AppMenu>().ReverseMap();
+
+                x.CreateMap<MenuItemViewModel, AppMenuItem>().ReverseMap();
+
+                x.CreateMap<NewMenuItemViewModel, AppMenuItem>()
+                .ForMember(dest => dest.AppMenuKey, opt => opt.MapFrom(src => src.MenuKey)).ReverseMap();
+
+                x.CreateMap<EditMenuItemViewModel, AppMenuItem>()
+                .ForMember(dest => dest.AppMenuKey, opt => opt.MapFrom(src => src.MenuKey)).ReverseMap();
 
             });
 
@@ -292,11 +307,210 @@ namespace ltracker.Controllers
          
             return View(model);
         }
-        
+
         #endregion
 
+        #region Menús
+
+        public ActionResult Menus()
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            var menus = menuRepository.GetAll();
+            var model = mapper.Map<ICollection<MenuViewModel>>(menus);
+            return View(model);
+        }
+
+        public ActionResult CreateMenu()
+        {
+            var context = new AppSecurityContext();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateMenu(NewMenuViewModel model)
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            if (ModelState.IsValid) {
+
+                var menu = mapper.Map<AppMenu>(model);
+                menuRepository.Add(menu);
+                context.SaveChanges();
+                return RedirectToAction("Menus");
+            }
+            return View();
+        }
+
+        public ActionResult EditMenu(string id)
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            var menu = menuRepository.Find(id);
+            var model = mapper.Map<EditMenuViewModel>(menu);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditMenu(string id, EditMenuViewModel model)
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var menu = mapper.Map<AppMenu>(model);
+                    menuRepository.Update(menu);
+                    context.SaveChanges();
+                    return RedirectToAction("Menus");
+                }
+            }
+            catch (Exception ex) {
+                ViewBag.Error = ex.Message;
+            }
+
+            return View(model);
+        }
+
+        public ActionResult MenuItems(string id)
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            var menuItemRepository = new MenuItemRepository(context);
+            var menu = menuRepository.Find(id);
+            var items = menuItemRepository.GetAll().Where(x => x.AppMenuKey == id).OrderBy(x=>x.Order);
+            var model = new MenuItemListViewModel();
+            model.MenuItems = mapper.Map<ICollection<MenuItemViewModel>>(items);
+            model.MenuKey = menu.Key;
+            model.MenuName = menu.Name;
+            return View(model);
+        }
+
+        public ActionResult CreateMenuItem(string id)
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            var menu = menuRepository.Find(id);
+            var model = new  NewMenuItemViewModel();
+            model.MenuName = menu.Name;
+            model.MenuKey = menu.Key;
+            model.AvailablePermissions = PopulatePermissions(model.PermissionId);
+            model.AvailableMenuItems = PopulateMenuItems(model.ParentId);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateMenuItem(string id, NewMenuItemViewModel model) {
+
+            var context = new AppSecurityContext();
+            var menuItemRepository = new MenuItemRepository(context);
+            try
+            {
+                var menuItem = mapper.Map<AppMenuItem>(model);
+                menuItemRepository.Add(menuItem);
+                context.SaveChanges();
+                return RedirectToAction("menuItems", new { id = model.MenuKey });
+            }
+            catch (Exception ex) {
+                ViewBag.Error = ex.Message;
+            }
+
+            model.AvailablePermissions = PopulatePermissions(model.PermissionId);
+            model.AvailableMenuItems = PopulateMenuItems(model.ParentId);
+            return View(model);
+        }
+
+
+        [HttpGet]
+        public ActionResult EditMenuItem(int id) //Id del item
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            var menuItemRepository = new MenuItemRepository(context);
+
+            var menuItem = menuItemRepository.Find(id);
+            var model = mapper.Map<EditMenuItemViewModel>(menuItem);
+            model.MenuKey = menuItem.AppMenuKey;
+            model.MenuName = menuItem.AppMenu.Name;
+            model.AvailablePermissions = PopulatePermissions(model.PermissionId);
+            model.AvailableMenuItems = PopulateMenuItems(model.ParentId);
+
+            model.AvailablePermissions = PopulatePermissions(model.PermissionId);
+            model.AvailableMenuItems = PopulateMenuItems(model.ParentId);
+
+            var itemSelf = model.AvailableMenuItems.Where(x => x.Value == id.ToString());
+            if (itemSelf != null && itemSelf.Count() > 0)
+            {
+                var itemForRemove = itemSelf.SingleOrDefault();
+                model.AvailablePermissions.ToList().Remove(itemForRemove);
+            }
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public ActionResult EditMenuItem(int id, EditMenuItemViewModel model)
+        {
+            var context = new AppSecurityContext();
+            var menuRepository = new MenuRepository(context);
+            var menuItemRepository = new MenuItemRepository(context);
+            try {
+                if (ModelState.IsValid)
+                {
+                    var menuItem = mapper.Map<AppMenuItem>(model);
+                    menuItemRepository.Update(menuItem);
+                    context.SaveChanges();
+                    return RedirectToAction("menuItems", new { id = model.MenuKey });
+                }
+            } catch (Exception ex) {
+                ViewBag.Error = ex.Message;
+            }
+           
+           
+
+            model.AvailablePermissions = PopulatePermissions(model.PermissionId);
+            model.AvailableMenuItems = PopulateMenuItems(model.ParentId);
+
+            var itemSelf = model.AvailableMenuItems.Where(x => x.Value == id.ToString());
+            if (itemSelf != null && itemSelf.Count()>0) {
+                var itemForRemove = itemSelf.SingleOrDefault();
+                model.AvailablePermissions.ToList().Remove(itemForRemove);
+            }
+            return View(model);
+        }
+
+
+        
+        public SelectList PopulatePermissions(object selectedItem = null)
+        {
+            var context = new AppSecurityContext();
+            var repository = new PermissionRepository(context);
+            var permissions = repository.GetAll().Include(x=>x.Resource)
+                .Include(x=>x.Action)
+                .OrderBy(x => x.ResourceKey);
+            var permissionList = new List<SelectListItem>();
+            permissionList.Add(new SelectListItem { Value=null, Text="Sin permiso"});
+            foreach (var perm in permissions) {
+                var permDesc = $"{perm.Resource.Name} - {perm.Action.Name}";
+                permissionList.Add(new SelectListItem { Value = perm.Id.ToString(), Text = permDesc });
+            }
+            return new SelectList(permissionList, "Value", "Text", selectedItem);
+        }
+
+        public SelectList PopulateMenuItems(object selectedItem = null)
+        {
+            var context = new AppSecurityContext();
+            var repository = new MenuItemRepository(context);
+            var permissions = repository.GetAll().OrderBy(x => x.Name).ToList();
+            permissions.Insert(0, new AppMenuItem { Id = null, Name = "Sin padre" });
+            return new SelectList(permissions, "Id", "Name", selectedItem);
+        }
+
+        #endregion
     }
 
-   
+
 
 }

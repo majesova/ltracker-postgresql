@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using AppFramework.Security.Menus;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AppFramework.Security
@@ -14,6 +16,7 @@ namespace AppFramework.Security
         }
         public AppSecurityContext() : base("LearningContext")
         {
+
         }
 
         public DbSet<AppResource> Resources { get; set; }
@@ -21,7 +24,8 @@ namespace AppFramework.Security
         public DbSet<AppPermission> Permissions { get; set; }
         public DbSet<AppUserRole> UserRoles { get; set; }
         public DbSet<AppRolePermission> RolesPermissions { get; set; }
-
+        public DbSet<AppMenu> Menus { get; set; }
+        public DbSet<AppMenuItem> MenuItems{ get; set; }
         private string GetTableName(Type type)
         {
             var result = Regex.Replace(type.Name, ".[A-Z]", m => m.Value[0] + "_" + m.Value[1]);
@@ -39,6 +43,7 @@ namespace AppFramework.Security
             modelBuilder.Types().Configure(c => c.ToTable(GetTableName(c.ClrType)));
             //Precisión por defecto de decimales a menos que se especifique otro
             modelBuilder.Properties<decimal>().Configure(config => config.HasPrecision(10, 2));
+
             //Todos los id son claves primarias
             modelBuilder.Entity<AppUser>().ToTable("app_users");
             modelBuilder.Entity<AppUser>().Property(p => p.Id).HasColumnName("id");
@@ -64,6 +69,25 @@ namespace AppFramework.Security
             //Action-Resource combination in Permission
             modelBuilder.Entity<AppPermission>().HasRequired(x => x.Action).WithMany().HasForeignKey(x => x.ActionKey);
             modelBuilder.Entity<AppPermission>().HasRequired(x => x.Resource).WithMany().HasForeignKey(x => x.ResourceKey);
+
+            //Data Driven Menus
+
+            var menu = modelBuilder.Entity<AppMenu>();
+            menu.ToTable("app_menus").HasKey(x => x.Key);
+            menu.Property(x => x.Key).HasMaxLength(25);
+            menu.HasMany(x => x.Items).WithRequired(x => x.AppMenu).HasForeignKey(x => x.AppMenuKey);
+
+            var menuItem = modelBuilder.Entity<AppMenuItem>();
+            menuItem.ToTable("app_menuitems").HasKey(x=>x.Id);
+            menuItem.Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            menuItem.HasMany(x => x.Children).WithOptional(x => x.Parent).HasForeignKey(x => x.ParentId);
+            menuItem.HasOptional(x => x.Permission).WithMany().HasForeignKey(x => x.PermissionId);
+
+        }
+
+        public bool Exists<T>(T entity) where T : class
+        {
+            return this.Set<T>().Local.Any(e => e == entity);
         }
     }
 }

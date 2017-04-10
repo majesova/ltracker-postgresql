@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace AppFramework.Security.Repositories
 {
+    /// <summary>
+    /// Operaciones de Roles con BD
+    /// </summary>
     public class RoleRepository
     {
         private AppSecurityContext _context;
@@ -13,23 +16,28 @@ namespace AppFramework.Security.Repositories
         {
             _context = context;
         }
-
-
+        /// <summary>
+        /// Agrega un rol al contexto
+        /// </summary>
+        /// <param name="role">Rol que se desa agregar</param>
         public void Add(AppRole role) {
             _context.Roles.Add(role);
         }
-
+        /// <summary>
+        /// Marca un rol para ser actualizado
+        /// </summary>
+        /// <param name="role">Rol para actualizar</param>
         public void UpdateRole(AppRole role) {
             _context.Entry(role).State = System.Data.Entity.EntityState.Modified;
         }
-
-
-
-
+        /// <summary>
+        /// Agrega un rol relacionandolo con los permisos especificados
+        /// </summary>
+        /// <param name="role">Rol a agregar</param>
+        /// <param name="permissionsId">Identificadores de los permisos</param>
         public void AddRoleWithPermissions(AppRole role, int[] permissionsId) {
 
             _context.Roles.Add(role);
-
             if (permissionsId != null)
             {
                 var permissions = from r in _context.Permissions
@@ -40,9 +48,12 @@ namespace AppFramework.Security.Repositories
                     _context.RolesPermissions.Add(new AppRolePermission { Role = role, PermissionId = perm.Id });
                 }
             }
-
         }
-
+        /// <summary>
+        /// Actualiza un rol relacionandolo con los permisos especificados
+        /// </summary>
+        /// <param name="role">Rol que se va actualizar</param>
+        /// <param name="permissionsId">Identificadore de los permisos</param>
         public void UpdateRoleWithPermissions(AppRole role, int[] permissionsId) {
 
             _context.Entry(role).State = System.Data.Entity.EntityState.Modified;

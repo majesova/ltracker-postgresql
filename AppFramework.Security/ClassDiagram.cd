@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Enlaza roles con usuarios, comportamiento heredado de Identity Framework.">
+    <Position X="6.24" Y="2.469" Height="0.688" Width="1.7" />
+  </Comment>
+  <Class Name="AppFramework.Security.AppRole">
+    <Position X="4.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IdentityModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppFramework.Security.AppResource">
+    <Position X="1.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IdentityModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppFramework.Security.AppAction">
+    <Position X="3" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IdentityModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppFramework.Security.AppPermission">
+    <Position X="2" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAIIAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>IdentityModels.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Action" />
+      <Property Name="Resource" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Microsoft.AspNet.Identity.EntityFramework.IdentityRole&lt;TKey, TUserRole&gt;" Collapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="AppFramework.Security.AppUser">
+    <Position X="8.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAEAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAg=</HashCode>
+      <FileName>IdentityModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Microsoft.AspNet.Identity.EntityFramework.IdentityUser&lt;TKey, TLogin, TRole, TClaim&gt;" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Roles" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="AppFramework.Security.AppRolePermission">
+    <Position X="4.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAEAAEAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IdentityModels.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Role" />
+      <Property Name="Permission" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="AppFramework.Security.AppUserRole">
+    <Position X="6.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IdentityModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole&lt;TKey&gt;" Collapsed="true">
+    <Position X="6.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="System.Collections.Generic.ICollection&lt;T&gt;" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

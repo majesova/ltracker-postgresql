@@ -763,6 +763,12 @@
     <Content Include="Views\Admin\EditUser.cshtml" />
     <Content Include="Views\Admin\EditRole.cshtml" />
     <Content Include="Views\Admin\DetailsUser.cshtml" />
+    <Content Include="Views\Admin\CreateMenu.cshtml" />
+    <Content Include="Views\Admin\Menus.cshtml" />
+    <Content Include="Views\Admin\EditMenu.cshtml" />
+    <Content Include="Views\Admin\MenuItems.cshtml" />
+    <Content Include="Views\Admin\CreateMenuItem.cshtml" />
+    <Content Include="Views\Admin\EditMenuItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

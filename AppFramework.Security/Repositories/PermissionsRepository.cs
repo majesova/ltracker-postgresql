@@ -13,15 +13,20 @@ namespace AppFramework.Security.Repositories
         {
             _context = context;
         }
-
-        public IQueryable GetAll() {
+        /// <summary>
+        /// Devuelve todos los permisos en la base de datos
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<AppPermission> GetAll() {
             return _context.Permissions.Include(x => x.Action).Include(x => x.Resource);
         }
-
+        /// <summary>
+        /// Agrega un permiso a contexto
+        /// </summary>
+        /// <param name="permission"></param>
         public void Add(AppPermission permission) {
             _context.Permissions.Add(permission);
         }
-        
 
         /// <summary>
         /// Valida si entre los permisos contenidos en los roles del usuario está una combinación que satisfaga action - resource

@@ -8,9 +8,11 @@ using ltracker.Data.Repositories;
 using ltracker.Data.Entities;
 using ltracker.Models;
 using ltracker.Helpers;
+using AppFramework.Security.Filters;
 
 namespace ltracker.Controllers
 {
+    [AuthorizeUser(ActionKey = "R", ResourceKey = "INDIV")]
     public class IndividualController : BaseController
     {
         
