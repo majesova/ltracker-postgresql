@@ -18,60 +18,40 @@
         @Html.DisplayFor(x => x.MenuName)<br />
     </div>
 
-    @Html.HiddenFor(x=>x.MenuKey)
+    @Html.HiddenFor(x => x.MenuKey)
     @Html.HiddenFor(x => x.MenuName)
 </p>
 
 <p>
     @Html.ActionLink("Nuevo Item", "CreateMenuItem", new { id = Model.MenuKey })
 </p>
-<table class="table">
-    <tr>
-        <th>
-            Orden
-        </th>
-        <th>
-            Nombre
-        </th>
-        <th>
-            Ruta
-        </th>
-        <th>
-            Padre
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model.MenuItems) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Order)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PathToResource)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Parent.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "EditMenuItem", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-   
-    </tr>
-    <tr>
-        
-        <td colspan="4">
-            <div class="text-danger">
-                @ViewBag.Error
-            </div>
-        </td>
-    </tr>
-}
+
+    <ul class="list-group">
+        @{ 
+            var parents = Model.MenuItems.Where(x => x.ParentId == null);
+        }
+        @foreach (var item in parents)
+        {
+        <li class="list-group-item">
+            @item.Order - @item.Name <div class="pull-right">
+    @Html.ActionLink("Edit", "EditMenuItem", new { id = item.Id })
+</div>
+            @{
+                var childs = Model.MenuItems.Where(x => x.ParentId == item.Id).OrderBy(x=>x.Order);
+                <ul class="list-group">
+                    @foreach (var child in childs) {
+                    <li style="margin-left:5em" class="list-group-item">&nbsp;&nbsp;&nbsp;@child.Order - @child.Name
+                    <div class="pull-right">
+                        @Html.ActionLink("Edit", "EditMenuItem", new { id = child.Id })
+                    </div>
+                    </li>
+                    }
+                </ul >
+                }
+        </li>
+        }
+    </ul>
     @if (Model.MenuItems.Count == 0) {
         <tr><td colspan="4">
             <span class="alert text-info text-center">
@@ -80,4 +60,3 @@
             </td>
         </tr>
     }
-</table>

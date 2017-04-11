@@ -3,15 +3,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security;
 using System.Security.Claims;
-using System.Web.Mvc;
 
 namespace AppFramework.Security
 {
@@ -26,6 +21,14 @@ namespace AppFramework.Security
         {
             // Tenga en cuenta que el valor de authenticationType debe coincidir con el definido en CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            // Agregar aquí notificaciones personalizadas de usuario
+            return userIdentity;
+        }
+
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(AppUserManager manager, string authenticationType)
+        {
+            // Tenga en cuenta que el valor de authenticationType debe coincidir con el definido en CookieAuthenticationOptions.AuthenticationType
+            var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
             // Agregar aquí notificaciones personalizadas de usuario
             return userIdentity;
         }
@@ -192,6 +195,5 @@ namespace AppFramework.Security
         {
         }
     }
-
-   
+    
 }

@@ -24,6 +24,8 @@ namespace ltracker.Helpers
                 x.CreateMap<NewAssignmentViewModel, AssignedCourse>();
                 x.CreateMap<AssignedCourse, AssignmentViewModel>();
                 x.CreateMap<EditAssignmentViewModel, AssignedCourse>().ReverseMap();
+                x.CreateMap<Topic, TopicViewModel>().ReverseMap();
+                x.CreateMap<Topic, EditTopicViewModel>().ReverseMap();
             });
             mapper = config.CreateMapper();
         }

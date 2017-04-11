@@ -18,6 +18,15 @@ namespace AppFramework.Security.Repositories
             return _context.MenuItems;
         }
 
+        public IQueryable<AppMenuItem> GetItemsByMenuKey(string key) {
+            var result = _context.MenuItems
+                .Include(x => x.AppMenu)
+                .Include(x => x.Parent)
+                .Where(x => x.AppMenuKey == key).OrderBy(x=>x.Order);
+
+            return result;
+        }
+
         public void Add(AppMenuItem menuItem)
         {
             _context.MenuItems.Add(menuItem);
@@ -34,7 +43,7 @@ namespace AppFramework.Security.Repositories
 
         public void Delete(AppMenuItem menuItem)
         {
-            _context.Entry(menuItem).State = System.Data.Entity.EntityState.Deleted;
+            _context.Entry(menuItem).State = EntityState.Deleted;
         }
 
         public AppMenuItem Find(int id) {
@@ -54,7 +63,7 @@ namespace AppFramework.Security.Repositories
                              orderby menuItem.Order
                              select menuItem.Id).Distinct();
 
-            var items = _context.MenuItems.Include(x => x.Children).Where(x =>menuItems.Contains(x.Id.Value) && x.ParentId == null).ToList();
+            var items = _context.MenuItems.Include(x => x.Children).Where(x => menuItems.Contains(x.Id.Value) && x.ParentId == null).OrderBy(x => x.Order).ToList();
 
             return items;
         }

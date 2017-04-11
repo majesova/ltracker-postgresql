@@ -4,7 +4,7 @@ using System.Security.Claims;
 using AppFramework.Security.Repositories;
 using System.Web;
 
-namespace AppFramework.Security.Filters
+namespace AppFramework.Security.Extensions
 {
     /// <summary>
     /// Extensiones de seguridad

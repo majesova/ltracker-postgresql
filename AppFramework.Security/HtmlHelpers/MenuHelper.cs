@@ -1,9 +1,7 @@
 ﻿using AppFramework.Security.Menus;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -11,7 +9,12 @@ namespace AppFramework.Security.HtmlHelpers
 {
     public static class MenuHelper
     {
-
+        /// <summary>
+        /// Crea un menú boostrap
+        /// </summary>
+        /// <param name="html">Para extender</param>
+        /// <param name="items">Elementos del menú</param>
+        /// <returns>Html</returns>
         public static HtmlString BoostrapMenu(this HtmlHelper html, ICollection<AppMenuItem> items) {
 
             var request = HttpContext.Current.Request;
@@ -28,13 +31,20 @@ namespace AppFramework.Security.HtmlHelpers
             }
             return new HtmlString(sb.ToString());
         }
-
+        /// <summary>
+        /// Crea un nodo del menú
+        /// </summary>
+        /// <param name="item">Item del menú</param>
+        /// <param name="request">Solicitud actual</param>
+        /// <param name="urlHelper">Helper para url</param>
+        /// <returns>html en string</returns>
         internal static string CreateNode(AppMenuItem item, HttpRequest request, UrlHelper urlHelper) {
 
             var sb = new StringBuilder();
             if (item.Children == null) {
                 item.Children = new List<AppMenuItem>();
             }
+            item.Children = item.Children.OrderBy(x => x.Order).ToList();
             if  (item.Children.Count == 0 )
             {
                 //Nodo simple

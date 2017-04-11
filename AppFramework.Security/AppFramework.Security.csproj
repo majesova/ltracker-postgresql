@@ -120,8 +120,8 @@
   <ItemGroup>
     <Compile Include="AppSecurityContext.cs" />
     <Compile Include="Filters\AuthorizeUserAttribute.cs" />
-    <Compile Include="Filters\OwinMenuExtension.cs" />
-    <Compile Include="Filters\OwinPermissionExtension.cs" />
+    <Compile Include="Extensions\OwinMenuExtension.cs" />
+    <Compile Include="Extensions\OwinPermissionExtension.cs" />
     <Compile Include="HtmlHelpers\MenuHelper.cs" />
     <Compile Include="IdentityModels.cs" />
     <Compile Include="Menus\AppMenu.cs" />
@@ -144,6 +144,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Repositories\MenuItemRepository.cs" />
     <Compile Include="Repositories\MenuRepository.cs" />
     <Compile Include="Repositories\PermissionsRepository.cs" />
@@ -171,9 +172,7 @@
       <DependentUpon>201704052053083_MenuItemNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scripts\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

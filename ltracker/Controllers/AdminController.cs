@@ -379,7 +379,7 @@ namespace ltracker.Controllers
             var menuRepository = new MenuRepository(context);
             var menuItemRepository = new MenuItemRepository(context);
             var menu = menuRepository.Find(id);
-            var items = menuItemRepository.GetAll().Where(x => x.AppMenuKey == id).OrderBy(x=>x.Order);
+            var items = menuItemRepository.GetItemsByMenuKey(id);
             var model = new MenuItemListViewModel();
             model.MenuItems = mapper.Map<ICollection<MenuItemViewModel>>(items);
             model.MenuKey = menu.Key;

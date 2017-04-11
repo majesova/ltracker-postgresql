@@ -1,18 +1,20 @@
 ﻿using AppFramework.Security.Menus;
 using AppFramework.Security.Repositories;
 using Microsoft.Owin;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
-namespace AppFramework.Security.Filters
+namespace AppFramework.Security.Extensions
 {
     public static class OwinMenuExtension
     {
+        /// <summary>
+        /// Devuelve las opciones de menú que corresponden al usuario según sus permisos
+        /// </summary>
+        /// <param name="context">Contexto de OWIN</param>
+        /// <returns>Colección de permisos</returns>
         public static ICollection<AppMenuItem> GetUserMenu(this IOwinContext context) {
             var user = (ClaimsIdentity)HttpContext.Current.User.Identity;
             if (!user.IsAuthenticated) {

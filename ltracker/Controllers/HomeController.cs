@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
-using AppFramework.Security.Filters;
+using AppFramework.Security.Extensions;
 
 namespace ltracker.Controllers
 {

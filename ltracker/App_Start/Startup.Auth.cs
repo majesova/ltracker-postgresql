@@ -7,11 +7,16 @@ using Microsoft.Owin.Security.Google;
 using Owin;
 using ltracker.Models;
 using AppFramework.Security;
+using Microsoft.Owin.Security.OAuth;
+using AppFramework.Security.Providers;
 
 namespace ltracker
 {
     public partial class Startup
     {
+        public static OAuthAuthorizationServerOptions OAuthOptions { get; private set; }
+
+        public static string PublicClientId { get; private set; }
         // Para obtener más información para configurar la autenticación, visite http://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
@@ -31,8 +36,6 @@ namespace ltracker
                 {
                     // Permite a la aplicación validar la marca de seguridad cuando el usuario inicia sesión.
                     // Es una característica de seguridad que se usa cuando se cambia una contraseña o se agrega un inicio de sesión externo a la cuenta. 
-                    
-                    
                     OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<AppUserManager, AppUser, long>(
                         validateInterval: TimeSpan.FromMinutes(30),
                         regenerateIdentityCallback: (manager, user) => user.GenerateUserIdentityAsync(manager),
@@ -41,6 +44,19 @@ namespace ltracker
             });            
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
+            PublicClientId = "self";
+            OAuthOptions = new OAuthAuthorizationServerOptions
+            {
+                TokenEndpointPath = new PathString("/Token"),
+                Provider = new ApplicationOAuthProvider(PublicClientId),
+                AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(30),
+                //TODO: En el modo de producción establezca AllowInsecureHttp = false
+                AllowInsecureHttp = true,
+            };
+
+            // Permitir que la aplicación use tokens portadores para autenticar usuarios
+            app.UseOAuthBearerTokens(OAuthOptions);
             // Permite que la aplicación almacene temporalmente la información del usuario cuando se verifica el segundo factor en el proceso de autenticación de dos factores.
             app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
 
